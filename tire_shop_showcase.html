@@ -1,0 +1,138 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tire Shop Showcase</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: url('https://images.unsplash.com/photo-1570129477492-45c003edd2be') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+    }
+    .overlay {
+      background: rgba(0, 0, 0, 0.8);
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    nav {
+      background-color: rgba(51, 51, 51, 0.9);
+      color: white;
+      padding: 1rem;
+      border-radius: 10px;
+      margin-bottom: 2rem;
+    }
+    .filters {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+    .filters input, .filters select {
+      padding: 0.5rem;
+      border-radius: 5px;
+      border: none;
+    }
+    .product-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .card {
+      background: #fff;
+      color: #000;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    .card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+    .card-content {
+      padding: 1rem;
+    }
+    .card-content h2 {
+      margin-top: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <nav>
+      <h1>Premium Tire Shop</h1>
+      <p>Your one-stop shop for top quality tires and services</p>
+    </nav>
+    <div class="filters">
+      <input type="text" id="search" placeholder="Search tire brands..." oninput="filterTires()">
+      <select id="serviceFilter" onchange="filterTires()">
+        <option value="">All Services</option>
+        <option value="Installation">Installation</option>
+        <option value="Balancing">Balancing</option>
+        <option value="Alignment">Alignment</option>
+      </select>
+      <select id="sort" onchange="filterTires()">
+        <option value="default">Sort by</option>
+        <option value="asc">Price: Low to High</option>
+        <option value="desc">Price: High to Low</option>
+      </select>
+    </div>
+    <div id="product-list" class="product-list"></div>
+  </div>
+
+  <script>
+    const tires = [
+      {
+        name: "Michelin Pilot Sport",
+        image: "https://images.unsplash.com/photo-1607006341816-7e1f93f8c7e6",
+        price: 220,
+        services: ["Installation", "Balancing"]
+      },
+      {
+        name: "Bridgestone Turanza",
+        image: "https://images.unsplash.com/photo-1585366119957-3bcfc9ef47ae",
+        price: 180,
+        services: ["Installation", "Alignment"]
+      },
+      {
+        name: "Goodyear Eagle F1",
+        image: "https://images.unsplash.com/photo-1617043857678-fc0ae241d23e",
+        price: 200,
+        services: ["Balancing", "Alignment"]
+      }
+    ];
+
+    function filterTires() {
+      const search = document.getElementById('search').value.toLowerCase();
+      const serviceFilter = document.getElementById('serviceFilter').value;
+      const sort = document.getElementById('sort').value;
+
+      let filtered = tires.filter(t =>
+        t.name.toLowerCase().includes(search) &&
+        (!serviceFilter || t.services.includes(serviceFilter))
+      );
+
+      if (sort === 'asc') filtered.sort((a, b) => a.price - b.price);
+      else if (sort === 'desc') filtered.sort((a, b) => b.price - a.price);
+
+      const list = document.getElementById('product-list');
+      list.innerHTML = filtered.map(tire => `
+        <div class="card">
+          <img src="${tire.image}" alt="${tire.name}">
+          <div class="card-content">
+            <h2>${tire.name}</h2>
+            <p><strong>Price:</strong> $${tire.price}</p>
+            <p><strong>Services:</strong> ${tire.services.join(", ")}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', filterTires);
+  </script>
+</body>
+</html>
